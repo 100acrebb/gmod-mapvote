@@ -27,7 +27,7 @@ end
 function RTV.Start()
 			if GAMEMODE_NAME == "terrortown" then
 				net.Start("RTV_Delay")
-        		net.Broadcast()
+				net.Broadcast()
  
 				hook.Add("TTTEndRound", "MapvoteDelayed", function()
 					timer.Stop("end2prep")
@@ -35,14 +35,14 @@ function RTV.Start()
 				end)
 			elseif GAMEMODE_NAME == "murder" then
 				net.Start("RTV_Delay")
-        		net.Broadcast()
+				net.Broadcast()
 
 				hook.Add("OnEndRound", "MapvoteDelayed", function()
 					GAMEMODE.RoundCount = GAMEMODE.RoundLimit:GetInt()
 				end)
 			elseif GAMEMODE_NAME == "prop_hunt" then
 				net.Start("RTV_Delay")
-        		net.Broadcast()
+				net.Broadcast()
 
 				hook.Add("OnRoundEnd", "MapvoteDelayed", function()
 					function GAMEMODE.HasReachedRoundLimit( iNum )
@@ -51,7 +51,7 @@ function RTV.Start()
 				end)
 			elseif GAMEMODE_NAME == "deathrun" then
 				net.Start("RTV_Delay")
-        		net.Broadcast()
+				net.Broadcast()
 
 				hook.Add("RoundEnd", "MapvoteDelayed", function()
 					MapVote.Start(nil, nil, nil, nil)
@@ -115,8 +115,8 @@ function RTV.CanVote( ply )
 		return false, "There has already been a vote, the map is going to change!"
 	end
 	if plyCount < RTV.PlayerCount then
-        return false, "You need more players before you can rock the vote!"
-    end
+		return false, "You need more players before you can rock the vote!"
+	end
 
 	return true
 
