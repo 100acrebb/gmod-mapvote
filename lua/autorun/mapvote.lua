@@ -9,9 +9,11 @@ MapVoteConfigDefault = {
     EnableCooldown = true,
     MapsBeforeRevote = 3,
     RTVPlayerCount = 3,
-    MapPrefixes = {"ttt_"}
-    }
---Default Config
+    MapPrefixes = { "ttt_" },
+	Murder = {
+		MapList = false
+	}
+}
 
 hook.Add( "Initialize", "MapVoteConfigSetup", function()
     if not file.Exists( "mapvote", "DATA") then

@@ -30,7 +30,24 @@ function RTV.Start()
         		net.Broadcast()
  
 				hook.Add("TTTEndRound", "MapvoteDelayed", function()
+					timer.Stop("end2prep")
 					MapVote.Start(nil, nil, nil, nil)
+				end)
+			elseif GAMEMODE_NAME == "murder" then
+				net.Start("RTV_Delay")
+        		net.Broadcast()
+
+				hook.Add("OnEndRound", "MapvoteDelayed", function()
+					GAMEMODE.RoundCount = GAMEMODE.RoundLimit:GetInt()
+				end)
+			elseif GAMEMODE_NAME == "prop_hunt" then
+				net.Start("RTV_Delay")
+        		net.Broadcast()
+
+				hook.Add("OnRoundEnd", "MapvoteDelayed", function()
+					function GAMEMODE.HasReachedRoundLimit( iNum )
+						return true
+					end
 				end)
 			elseif GAMEMODE_NAME == "deathrun" then
 				net.Start("RTV_Delay")
