@@ -28,7 +28,8 @@ net.Receive("RAM_MapVoteStart", function()
     MapVote.CurrentMaps = {}
     MapVote.Allow = true
     MapVote.Votes = {}
-    
+    MapVote.Config.EnableMinimize = net.ReadBit()
+	
     local amt = net.ReadUInt(32)
     
     for i = 1, amt do
@@ -107,11 +108,6 @@ function PANEL:Init()
         derma.SkinHook("Paint", "WindowCloseButton", panel, w, h)
     end
 
-    self.closeButton.DoClick = function()
-        print("HI")
-        self:SetVisible(false)
-    end
-
     self.maximButton = vgui.Create("DButton", self.Canvas)
     self.maximButton:SetText("")
     self.maximButton:SetDisabled(true)
@@ -127,7 +123,23 @@ function PANEL:Init()
     self.minimButton.Paint = function(panel, w, h)
         derma.SkinHook("Paint", "WindowMinimizeButton", panel, w, h)
     end
-
+	
+	if not MapVote.Config.EnableMinimize then
+		self.closeButton.DoClick = function()
+			self:SetVisible(false)
+		end
+	else
+		self.minimButton.DoClick = function()
+			if self.mapList:IsVisible() then
+				self.mapList:SetVisible(false)
+				self.mapList:KillFocus()
+			else
+				self.mapList:SetVisible(true)
+				self.mapList:RequestFocus()
+			end
+		end
+	end
+	
     self.Voters = {}
 end
 

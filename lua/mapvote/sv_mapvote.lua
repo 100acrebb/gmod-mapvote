@@ -111,6 +111,7 @@ function MapVote.Start(length, current, limit, prefix, callback)
     end
     
     net.Start("RAM_MapVoteStart")
+		net.WriteBit( MapVote.Config.EnableMinimize )
         net.WriteUInt(#vote_maps, 32)
         
         for i = 1, #vote_maps do

@@ -9,6 +9,7 @@ MapVoteConfigDefault = {
     EnableCooldown = true,
     MapsBeforeRevote = 3,
     RTVPlayerCount = 3,
+	EnableMinimize = false,
     MapPrefixes = { "ttt_" },
 	Murder = {
 		MapList = false
