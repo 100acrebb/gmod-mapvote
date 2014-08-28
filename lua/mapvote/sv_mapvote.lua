@@ -62,6 +62,18 @@ function MapVote.Start(length, current, limit, prefix, callback)
 	cooldown = MapVote.Config.EnableCooldown or true
 	prefix = prefix or MapVote.Config.MapPrefixes
 
+	if GAMEMODE_NAME == "murder" then
+		if MapVote.Config.Murder.MapList then
+			if #GAMEMODE.MapList > 0 then
+				-- only match maps that we have specified
+				prefix = {}
+				for k, map in pairs(GAMEMODE.MapList) do
+					table.insert(prefix, map .. "%.bsp$")
+				end
+			end
+		end
+	end
+
 	local is_expression = false
 
 	if not prefix then

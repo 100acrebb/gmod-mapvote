@@ -16,21 +16,7 @@ hook.Add( "Initialize", "AutoMapVote", function()
 	
 	if GAMEMODE_NAME == "murder" then
 		function GAMEMODE.ChangeMap( self )
-			if #self.MapList > 0 then
-				if MapVote then
-					local prefix = nil
-					if MapVote.Config.Murder.MapList then
-						-- only match maps that we have specified
-						prefix = {}
-						for k, map in pairs(self.MapList) do
-							table.insert(prefix, map .. "%.bsp$")
-						end
-					end
-					MapVote.Start(nil, nil, nil, prefix)
-					return
-				end
-				self:RotateMap()
-			end
+			MapVote.Start(nil, nil, nil, nil)
 		end
 	end
 
