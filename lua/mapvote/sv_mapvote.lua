@@ -62,6 +62,18 @@ function MapVote.Start(length, current, limit, prefix, callback)
 	cooldown = MapVote.Config.EnableCooldown or MapVote.Config.EnableCooldown == nil and true
 	prefix = prefix or MapVote.Config.MapPrefixes
 
+	if GAMEMODE_NAME == "murder" then
+		if MapVote.Config.Murder.MapList then
+			if #GAMEMODE.MapList > 0 then
+				-- only match maps that we have specified
+				prefix = {}
+				for k, map in pairs(GAMEMODE.MapList) do
+					table.insert(prefix, map .. "%.bsp$")
+				end
+			end
+		end
+	end
+
 	local is_expression = false
 
 	if not prefix then
@@ -111,6 +123,7 @@ function MapVote.Start(length, current, limit, prefix, callback)
 	end
 	
 	net.Start("RAM_MapVoteStart")
+		net.WriteBit( MapVote.Config.EnableMinimize )
 		net.WriteUInt(#vote_maps, 32)
 		
 		for i = 1, #vote_maps do
@@ -160,7 +173,7 @@ function MapVote.Start(length, current, limit, prefix, callback)
 		
 		
 		timer.Simple(4, function()
-			if (hook.Run("MapVoteChange", map) != false) then
+			if (hook.Run("MapVoteChange", map) ~= false) then
 				if (callback) then
 					callback(map)
 				else
