@@ -46,3 +46,19 @@ hook.Add( "Initialize", "AutoMapVote", function()
 	end
 
 end )
+
+hook.Add( "MapVoteChange", "ExtendMap", function(votedMap)
+	if GAMEMODE_NAME == "terrortown" then
+		local currentMap = game.GetMap()
+		if (votedMap == currentMap) then
+			SetGlobalInt("ttt_rounds_left", GetGlobalInt("ttt_rounds_left", 6) + 5)
+			SetGlobalInt("ttt_time_limit_minutes", GetGlobalInt("ttt_time_limit_minutes") + 10)
+			
+			RunConsoleCommand("ttt_roundrestart")
+			
+			return false
+		end
+	end
+	
+	return true
+end )
