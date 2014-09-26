@@ -51,8 +51,11 @@ hook.Add( "MapVoteChange", "ExtendMap", function(votedMap)
 	if GAMEMODE_NAME == "terrortown" then
 		local currentMap = game.GetMap()
 		if (votedMap == currentMap) then
-			SetGlobalInt("ttt_rounds_left", GetGlobalInt("ttt_rounds_left", 6) + 5)
-			SetGlobalInt("ttt_time_limit_minutes", GetGlobalInt("ttt_time_limit_minutes") + 10)
+			local etime = MapVote.Config.ExtendTime or 10
+			local erounds = MapVote.Config.ExtendRounds or 5
+		
+			SetGlobalInt("ttt_rounds_left", GetGlobalInt("ttt_rounds_left", 6) + erounds)
+			SetGlobalInt("ttt_time_limit_minutes", GetGlobalInt("ttt_time_limit_minutes") + etime)
 			
 			RunConsoleCommand("ttt_roundrestart")
 			
