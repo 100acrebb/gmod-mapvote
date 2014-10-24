@@ -179,6 +179,9 @@ function MapVote.Start(length, current, limit, prefix, callback)
 				else
 					RunConsoleCommand("changelevel", map)
 				end
+			else
+				MapVote.Allow = true
+				MapVote.Cancel()
 			end
 		end)
 	end)
