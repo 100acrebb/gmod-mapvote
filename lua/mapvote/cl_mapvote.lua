@@ -1,3 +1,6 @@
+local MAGIC_WIDTH = 640
+local PAD_FACTOR = 40
+
 surface.CreateFont("RAM_VoteFont", {
 	font = "Trebuchet MS",
 	size = 19,
@@ -25,23 +28,29 @@ MapVote.EndTime = 0
 MapVote.Panel = false
 
 net.Receive("RAM_MapVoteStart", function()
+	--print("Received RAM_MapVoteStart")
 	MapVote.CurrentMaps = {}
 	MapVote.Allow = true
 	MapVote.Votes = {}
 	MapVote.Config.EnableMinimize = net.ReadBit()
 	
-	local amt = net.ReadUInt(32)
+	MapVote.Config.EnableMinimize = false  -- mtz FORCED FOR NOW
 	
+	local amt = net.ReadUInt(32)
+	--print("amt",amt)
 	for i = 1, amt do
 		local map = net.ReadString()
 		
 		MapVote.CurrentMaps[#MapVote.CurrentMaps + 1] = map
+		--print("map",map)
 	end
 	
 	MapVote.EndTime = CurTime() + net.ReadUInt(32)
+	--print("MapVote.EndTime",MapVote.EndTime)
 	
 	if(IsValid(MapVote.Panel)) then
 		MapVote.Panel:Remove()
+		print("Removed MvP")
 	end
 	
 	MapVote.Panel = vgui.Create("RAM_VoteScreen")
@@ -49,6 +58,7 @@ net.Receive("RAM_MapVoteStart", function()
 end)
 
 net.Receive("RAM_MapVoteUpdate", function()
+	--print("Received RAM_MapVoteUpdate")
 	local update_type = net.ReadUInt(3)
 	
 	if(update_type == MapVote.UPDATE_VOTE) then
@@ -70,20 +80,24 @@ net.Receive("RAM_MapVoteUpdate", function()
 end)
 
 net.Receive("RAM_MapVoteCancel", function()
+	print("Received RAM_MapVoteCancel")
 	if IsValid(MapVote.Panel) then
 		MapVote.Panel:Remove()
 	end
 end)
 
 net.Receive("RTV_Delay", function()
+	--print("Received RTV_Delay")
 	chat.AddText(Color( 102,255,51 ), "[RTV]", Color( 255,255,255 ), " The vote has been rocked, map vote will begin on round end")
 end)
 
 local PANEL = {}
 
 function PANEL:Init()
+	--print ("inside Init")
 	self:ParentToHUD()
 	
+	--print ("creating the Canvas")
 	self.Canvas = vgui.Create("Panel", self)
 	self.Canvas:MakePopup()
 	self.Canvas:SetKeyboardInputEnabled(false)
@@ -94,12 +108,14 @@ function PANEL:Init()
 	self.countDown:SetText("")
 	self.countDown:SetPos(0, 14)
 	
+	--print ("creating the mapList")
 	self.mapList = vgui.Create("DPanelList", self.Canvas)
-	self.mapList:SetDrawBackground(false)
+	self.mapList:SetDrawBackground(true)
 	self.mapList:SetSpacing(4)
 	self.mapList:SetPadding(4)
 	self.mapList:EnableHorizontal(true)
 	self.mapList:EnableVerticalScrollbar()
+
 	
 	self.closeButton = vgui.Create("DButton", self.Canvas)
 	self.closeButton:SetText("")
@@ -141,25 +157,33 @@ function PANEL:Init()
 	end
 	
 	self.Voters = {}
+	print ("leaving Init")
 end
 
 function PANEL:PerformLayout()
-	local cx, cy = chat.GetChatBoxPos()
+	--print ("inside PerformLayout")
 	
+	local cx, cy = chat.GetChatBoxPos()
+	--print(cx, cy)
 	self:SetPos(0, 0)
 	self:SetSize(ScrW(), ScrH())
 	
-	local extra = math.Clamp(300, 0, ScrW() - 640)
+	local extra = math.Clamp(300, 0, ScrW() - MAGIC_WIDTH - PAD_FACTOR)
+	--print (extra)
+	
+    cy = math.Clamp(9999,150,cy)
+	
 	self.Canvas:StretchToParent(0, 0, 0, 0)
-	self.Canvas:SetWide(640 + extra)
-	self.Canvas:SetTall(cy -60)
+	self.Canvas:SetWide(MAGIC_WIDTH + extra)
+	--self.Canvas:SetTall(cy - 60)
+	self.Canvas:SetTall(cy)
 	self.Canvas:SetPos(0, 0)
 	self.Canvas:CenterHorizontal()
 	self.Canvas:SetZPos(0)
 	
 	self.mapList:StretchToParent(0, 90, 0, 0)
 
-	local buttonPos = 640 + extra - 31 * 3
+	local buttonPos = MAGIC_WIDTH + extra - 31 * 3
 
 	self.closeButton:SetPos(buttonPos - 31 * 0, 4)
 	self.closeButton:SetSize(31, 31)
@@ -172,6 +196,8 @@ function PANEL:PerformLayout()
 	self.minimButton:SetPos(buttonPos - 31 * 2, 4)
 	self.minimButton:SetSize(31, 31)
 	self.minimButton:SetVisible(true)
+	
+	--print ("leaving PerformLayout")
 	
 end
 
@@ -260,12 +286,15 @@ function PANEL:Think()
 end
 
 function PANEL:SetMaps(maps)
+
+	--print("inside SetMaps")
 	self.mapList:Clear()
 	
 	for k, v in RandomPairs(maps) do
 		local button = vgui.Create("DButton", self.mapList)
 		button.ID = k
 		button:SetText(v)
+		--print ("Setting button for ", v)
 		
 		button.DoClick = function()
 			net.Start("RAM_MapVoteUpdate")
@@ -293,15 +322,19 @@ function PANEL:SetMaps(maps)
 		button:SetTextInset(8, 0)
 		button:SetFont("RAM_VoteFont")
 		
-		local extra = math.Clamp(300, 0, ScrW() - 640)
+		local extra = math.Clamp(300, 0, ScrW() - MAGIC_WIDTH - PAD_FACTOR)
+
 		
 		button:SetDrawBackground(false)
 		button:SetTall(24)
 		button:SetWide(285 + (extra / 2))
 		button.NumVotes = 0
 		
+		--print ("adding button to mapList")
 		self.mapList:AddItem(button)
 	end
+	
+	--print("leaving SetMaps")
 end
 
 function PANEL:GetMapButton(id)

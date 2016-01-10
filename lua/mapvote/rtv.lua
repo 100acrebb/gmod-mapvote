@@ -15,9 +15,10 @@ RTV.Wait = 60 -- The wait time in seconds. This is how long a player has to wait
 RTV._ActualWait = CurTime() + RTV.Wait
 
 RTV.PlayerCount = MapVote.Config.RTVPlayerCount or 3
+RTV.PercentNeeded = MapVote.Config.RTVPercentNeeded or 0.66
 
 function RTV.ShouldChange()
-	return RTV.TotalVotes >= math.Round(#player.GetAll()*0.66)
+	return RTV.TotalVotes >= math.Round(#player.GetAll()*RTV.PercentNeeded)
 end
 
 function RTV.RemoveVote()
@@ -40,7 +41,7 @@ function RTV.Start()
 				hook.Add("OnEndRound", "MapvoteDelayed", function()
 					GAMEMODE.RoundCount = GAMEMODE.RoundLimit:GetInt()
 				end)
-			elseif GAMEMODE_NAME == "prop_hunt" then
+			elseif GAMEMODE_NAME == "prop_huntXXX" then
 				net.Start("RTV_Delay")
 				net.Broadcast()
 
@@ -71,7 +72,7 @@ function RTV.AddVote( ply )
 		RTV.TotalVotes = RTV.TotalVotes + 1
 		ply.RTVoted = true
 		MsgN( ply:Nick().." has voted to Rock the Vote." )
-		PrintMessage( HUD_PRINTTALK, ply:Nick().." has voted to Rock the Vote. ("..RTV.TotalVotes.."/"..math.Round(#player.GetAll()*0.66)..")" )
+		PrintMessage( HUD_PRINTTALK, ply:Nick().." has voted to Rock the Vote. ("..RTV.TotalVotes.."/"..math.Round(#player.GetAll()*RTV.PercentNeeded)..")" )
 
 		if RTV.ShouldChange() then
 			RTV.Start()

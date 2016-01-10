@@ -62,7 +62,7 @@ function MapVote.Start(length, current, limit, prefix, callback)
 	cooldown = MapVote.Config.EnableCooldown or MapVote.Config.EnableCooldown == nil and true
 	prefix = prefix or MapVote.Config.MapPrefixes
 
-	if GAMEMODE_NAME == "murder" then
+	--[[if GAMEMODE_NAME == "murder" then
 		if MapVote.Config.Murder.MapList then
 			if #GAMEMODE.MapList > 0 then
 				-- only match maps that we have specified
@@ -72,7 +72,7 @@ function MapVote.Start(length, current, limit, prefix, callback)
 				end
 			end
 		end
-	end
+	end]]
 
 	local is_expression = false
 
@@ -104,17 +104,19 @@ function MapVote.Start(length, current, limit, prefix, callback)
 		if(not current and game.GetMap():lower()..".bsp" == map) then continue end
 		if(cooldown and table.HasValue(recentmaps, map)) then continue end
 
-		if is_expression then
-			if(string.find(map, prefix)) then -- This might work (from gamemode.txt)
-				vote_maps[#vote_maps + 1] = map:sub(1, -5)
-				amt = amt + 1
-			end
-		else
-			for k, v in pairs(prefix) do
-				if string.find(map, "^"..v) then
+		if (map != "test_hardware.bsp" and map != "test_speakers.bsp") then
+			if is_expression then
+				if(string.find(map, prefix)) then -- This might work (from gamemode.txt)
 					vote_maps[#vote_maps + 1] = map:sub(1, -5)
 					amt = amt + 1
-					break
+				end
+			else
+				for k, v in pairs(prefix) do
+					if string.find(map, "^"..v) then
+						vote_maps[#vote_maps + 1] = map:sub(1, -5)
+						amt = amt + 1
+						break
+					end
 				end
 			end
 		end

@@ -3,16 +3,16 @@ MapVote.Config = {}
 
 --Default Config
 MapVoteConfigDefault = {
-	MapLimit = 24,
+	MapLimit = 22,
 	TimeLimit = 28,
 	ExtendTime = 10,
 	ExtendRounds = 5,
-	AllowCurrentMap = false,
-	EnableCooldown = true,
-	MapsBeforeRevote = 3,
+	AllowCurrentMap = true,
+	EnableCooldown = false,
+	MapsBeforeRevote = 1,
 	RTVPlayerCount = 3,
 	EnableMinimize = false,
-	MapPrefixes = { "ttt_" },
+	MapPrefixes = { "[a-z]_" },
 	Murder = {
 		MapList = false
 	}

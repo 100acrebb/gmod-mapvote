@@ -16,11 +16,12 @@ hook.Add( "Initialize", "AutoMapVote", function()
 	
 	if GAMEMODE_NAME == "murder" then
 		function GAMEMODE.ChangeMap( self )
-			MapVote.Start(nil, nil, nil, nil)
+			print ("Mapvote is starting a map vote!")
+			MapVote.Start()
 		end
 	end
 
-	if GAMEMODE_NAME == "prop_hunt" then
+	if GAMEMODE_NAME == "prop_huntXXX" then
 		RunConsoleCommand( "fretta_voting", "0" )
 		function GAMEMODE.StartMapVote( self )
 			-- If there's only one map, let the 'random map' thing choose it
